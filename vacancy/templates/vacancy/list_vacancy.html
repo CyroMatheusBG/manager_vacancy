@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block 'submenu' %}
+    {% if id_company %}
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="{% url 'details_company' id_company %}" class="nav-link">Detalhes da Empresa</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="{% url 'company_manager_vacancies' id_company %}" class="nav-link">Vagas</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <a href="{% url 'manager_contacts' id_company %}" class="nav-link">Contatos</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block 'dashboard' %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-chart-pie mr-1"></i>Vagas
+            </h3>
+            <div class="card-tools">
+                <ul class="nav nav-pills ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#div_open" id="_open" data-toggle="tab">Em aberto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#div_completed_by_here" id="_completed_by_here" data-toggle="tab">Preenchidas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#div_finished" id="_finished" data-toggle="tab">Finalizadas</a>
+                    </li>
+                </ul>
+            </div>
+        </div><!-- /.card-header -->
+        <div class="card-body">
+            <div class="tab-content p-0">
+                <!-- Morris chart - Sales -->
+                <div class="chart tab-pane active" id="div_open" style="position: relative; height: 500px;">
+                    {% for vacancy in list_vacancy_open %}
+                        <div class="small-box alert-primary">
+                            <div class="inner">
+                                <h3>{{ vacancy.ocupacao }}</h3>
+                                <h4>{{ vacancy.tipo_vaga }}</h4>
+                                {% if not id_company %}
+                                    <h4>{{ vacancy.company }}</h4>
+                                {% endif %}
+                            </div>
+                            <div class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M3.5 20q-.2 0-.35-.15Q3 19.7 3 19.5q0-.2.15-.35q.15-.15.35-.15H5v-.5h-.5q-.2 0-.35-.15Q4 18.2 4 18q0-.2.15-.35q.15-.15.35-.15H5V17H3.5q-.2 0-.35-.15Q3 16.7 3 16.5q0-.2.15-.35q.15-.15.35-.15h2q.2 0 .35.15q.15.15.15.35v3q0 .2-.15.35q-.15.15-.35.15Zm1-12q-.2 0-.35-.15Q4 7.7 4 7.5V5h-.5q-.2 0-.35-.15Q3 4.7 3 4.5q0-.2.15-.35Q3.3 4 3.5 4h1q.2 0 .35.15q.15.15.15.35v3q0 .2-.15.35Q4.7 8 4.5 8Zm-1 6q-.2 0-.35-.15Q3 13.7 3 13.5v-.225q0-.1.125-.325L4.8 11H3.5q-.2 0-.35-.15Q3 10.7 3 10.5q0-.2.15-.35q.15-.15.35-.15h2q.2 0 .35.15q.15.15.15.35v.225q0 .1-.125.325L4.2 13h1.3q.2 0 .35.15q.15.15.15.35q0 .2-.15.35q-.15.15-.35.15ZM9 19q-.425 0-.712-.288Q8 18.425 8 18t.288-.712Q8.575 17 9 17h11q.425 0 .712.288q.288.287.288.712t-.288.712Q20.425 19 20 19Zm0-6q-.425 0-.712-.288Q8 12.425 8 12t.288-.713Q8.575 11 9 11h11q.425 0 .712.287q.288.288.288.713t-.288.712Q20.425 13 20 13Zm0-6q-.425 0-.712-.287Q8 6.425 8 6t.288-.713Q8.575 5 9 5h11q.425 0 .712.287Q21 5.575 21 6t-.288.713Q20.425 7 20 7Z"/></svg>
+                            </div>
+                            {% if id_company %}
+                                <a href="{% url 'details_company_vacancy' id_company vacancy.id %}" class="small-box-footer">Ver Vagas&emsp;<i class="fas fa fa-list"></i></a>
+                            {% endif %}
+                            {% if not id_company %}
+                                <a href="{% url 'details_vacancy' vacancy.id %}" class="small-box-footer">Ver Vagas&emsp;<i class="fas fa fa-list"></i></a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if list_vacancy_open.has_previous %}
+                                <a href="?page={{ list_vacancy_open.previous_page_number }}">Anterior</a>
+                            {% endif %}
+                            <span class="current">
+                                {{ list_vacancy_open.number }} de {{ list_vacancy_open.paginator.num_pages }}
+                            </span>
+                            {% if list_vacancy_open.has_next %}
+                                <a href="?page={{ list_vacancy_open.next_page_number }}">Próxima</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="chart tab-pane" id="div_completed_by_here" style="position: relative; height: 500px;">
+                    {% for vacancy in list_vacancy_completed_by_here %}
+                        <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>{{ vacancy.ocupacao }}</h3>
+                                    <h4>{{ vacancy.tipo_vaga }}</h4>
+                                    {% if not id_company %}
+                                        <h4>{{ vacancy.company }}</h4>
+                                    {% endif %}
+                                </div>
+                                <div class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M3.5 20q-.2 0-.35-.15Q3 19.7 3 19.5q0-.2.15-.35q.15-.15.35-.15H5v-.5h-.5q-.2 0-.35-.15Q4 18.2 4 18q0-.2.15-.35q.15-.15.35-.15H5V17H3.5q-.2 0-.35-.15Q3 16.7 3 16.5q0-.2.15-.35q.15-.15.35-.15h2q.2 0 .35.15q.15.15.15.35v3q0 .2-.15.35q-.15.15-.35.15Zm1-12q-.2 0-.35-.15Q4 7.7 4 7.5V5h-.5q-.2 0-.35-.15Q3 4.7 3 4.5q0-.2.15-.35Q3.3 4 3.5 4h1q.2 0 .35.15q.15.15.15.35v3q0 .2-.15.35Q4.7 8 4.5 8Zm-1 6q-.2 0-.35-.15Q3 13.7 3 13.5v-.225q0-.1.125-.325L4.8 11H3.5q-.2 0-.35-.15Q3 10.7 3 10.5q0-.2.15-.35q.15-.15.35-.15h2q.2 0 .35.15q.15.15.15.35v.225q0 .1-.125.325L4.2 13h1.3q.2 0 .35.15q.15.15.15.35q0 .2-.15.35q-.15.15-.35.15ZM9 19q-.425 0-.712-.288Q8 18.425 8 18t.288-.712Q8.575 17 9 17h11q.425 0 .712.288q.288.287.288.712t-.288.712Q20.425 19 20 19Zm0-6q-.425 0-.712-.288Q8 12.425 8 12t.288-.713Q8.575 11 9 11h11q.425 0 .712.287q.288.288.288.713t-.288.712Q20.425 13 20 13Zm0-6q-.425 0-.712-.287Q8 6.425 8 6t.288-.713Q8.575 5 9 5h11q.425 0 .712.287Q21 5.575 21 6t-.288.713Q20.425 7 20 7Z"/></svg>
+                                </div>
+                                {% if id_company %}
+                                    <a href="{% url 'details_company_vacancy' id_company vacancy.id %}" class="small-box-footer">Ver Vagas&emsp;<i class="fas fa fa-list"></i></a>
+                                {% endif %}
+                                {% if not id_company %}
+                                    <a href="{% url 'details_vacancy' vacancy.id %}" class="small-box-footer">Ver Vagas&emsp;<i class="fas fa fa-list"></i></a>
+                                {% endif %}
+                            </div>
+                    {% endfor %}
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if list_vacancy_completed_by_here.has_previous %}
+                                <a href="?page={{ list_vacancy_completed_by_here.previous_page_number }}">Anterior</a>
+                            {% endif %}
+                            <span class="current">
+                                {{ list_vacancy_completed_by_here.number }} de {{ list_vacancy_completed_by_here.paginator.num_pages }}
+                            </span>
+                            {% if vacancies_completed_by_here.has_next %}
+                                <a href="?page={{ list_vacancy_completed_by_here.next_page_number }}">Próxima</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="chart tab-pane" id="div_finished" style="position: relative; height: 500px;">
+                    {% for vacancy in list_vacancy_completed %}
+                        <div class="small-box alert-secondary">
+                                <div class="inner">
+                                    <h3>{{ vacancy.ocupacao }}</h3>
+                                    <h4>{{ vacancy.tipo_vaga }}</h4>
+                                    {% if not id_company %}
+                                        <h4>{{ vacancy.company }}</h4>
+                                    {% endif %}
+                                </div>
+                                <div class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M3.5 20q-.2 0-.35-.15Q3 19.7 3 19.5q0-.2.15-.35q.15-.15.35-.15H5v-.5h-.5q-.2 0-.35-.15Q4 18.2 4 18q0-.2.15-.35q.15-.15.35-.15H5V17H3.5q-.2 0-.35-.15Q3 16.7 3 16.5q0-.2.15-.35q.15-.15.35-.15h2q.2 0 .35.15q.15.15.15.35v3q0 .2-.15.35q-.15.15-.35.15Zm1-12q-.2 0-.35-.15Q4 7.7 4 7.5V5h-.5q-.2 0-.35-.15Q3 4.7 3 4.5q0-.2.15-.35Q3.3 4 3.5 4h1q.2 0 .35.15q.15.15.15.35v3q0 .2-.15.35Q4.7 8 4.5 8Zm-1 6q-.2 0-.35-.15Q3 13.7 3 13.5v-.225q0-.1.125-.325L4.8 11H3.5q-.2 0-.35-.15Q3 10.7 3 10.5q0-.2.15-.35q.15-.15.35-.15h2q.2 0 .35.15q.15.15.15.35v.225q0 .1-.125.325L4.2 13h1.3q.2 0 .35.15q.15.15.15.35q0 .2-.15.35q-.15.15-.35.15ZM9 19q-.425 0-.712-.288Q8 18.425 8 18t.288-.712Q8.575 17 9 17h11q.425 0 .712.288q.288.287.288.712t-.288.712Q20.425 19 20 19Zm0-6q-.425 0-.712-.288Q8 12.425 8 12t.288-.713Q8.575 11 9 11h11q.425 0 .712.287q.288.288.288.713t-.288.712Q20.425 13 20 13Zm0-6q-.425 0-.712-.287Q8 6.425 8 6t.288-.713Q8.575 5 9 5h11q.425 0 .712.287Q21 5.575 21 6t-.288.713Q20.425 7 20 7Z"/></svg>
+                                </div>
+                                {% if id_company %}
+                                    <a href="{% url 'details_company_vacancy' id_company vacancy.id %}" class="small-box-footer">Ver Vagas&emsp;<i class="fas fa fa-list"></i></a>
+                                {% endif %}
+                                {% if not id_company %}
+                                    <a href="{% url 'details_vacancy' vacancy.id %}" class="small-box-footer">Ver Vagas&emsp;<i class="fas fa fa-list"></i></a>
+                                {% endif %}
+                            </div>
+                    {% endfor %}
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if list_vacancy_completed.has_previous %}
+                                <a href="?page={{ list_vacancy_completed.previous_page_number }}">Anterior</a>
+                            {% endif %}
+
+                            <span class="current">
+                                {{ list_vacancy_completed.number }} de {{ list_vacancy_completed.paginator.num_pages }}
+                            </span>
+
+                            {% if list_vacancy_completed.has_next %}
+                                <a href="?page={{ list_vacancy_completed.next_page_number }}">Próxima</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.card-body -->
+    </div>
+{% endblock %}
+{% block 'scripts' %}
+    $( window ).on( "load", function() {
+        document.getElementById("div_completed_by_here").style.display = "none";
+    });
+    $("#_open").click(function(){
+        document.getElementById("div_completed_by_here").style.display = "none";
+    });
+    $("#_finished").click(function(){
+        document.getElementById("div_completed_by_here").style.display = "none";
+    });
+    $("#_completed_by_here").click(function(){
+        document.getElementById("div_completed_by_here").style.display = "block";
+    });
+{% endblock %}

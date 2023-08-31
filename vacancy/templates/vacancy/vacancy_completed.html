@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block 'submenu' %}
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'details_company' Vacancy.company.id %}" class="nav-link">Detalhes da Empresa</a>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'company_manager_vacancies' Vacancy.company.id %}" class="nav-link">Vagas</a>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'manager_contacts' Vacancy.company.id %}" class="nav-link">Contatos</a>
+</li>
+{% endblock %}
+
+{% block 'dashboard' %}
+    <div class="small-box">
+        <div class="panel panel-default">
+            <div class="panel-heading bg-info">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">VAGA PREENCHIDA</a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <form role="form" action="" id="details" method="POST">
+                        {% csrf_token %}
+                        <div class="alert alert-warning" role="alert">
+                            {{ form|crispy }}
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" class="btn btn-primary" value="Finalizar">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .cm-toggle {
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .cm-toggle:after {
+            content: '';
+            width: 30px;
+            height: 14px;
+            display: inline-block;
+            background: rgba(196, 195, 195, 0.55);
+            border-radius: 18px;
+            clear: both;
+        }
+
+        .cm-toggle:before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            display: block;
+            position: absolute;
+            left: 0;
+            top: -1.5px;
+            border-radius: 50%;
+            background: rgb(255, 255, 255);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+
+        .cm-toggle:checked:before {
+            left: 16px;
+            box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .cm-toggle:checked:after {
+            background: #16a085;
+        }
+
+        .cm-toggle,
+        .cm-toggle:before,
+        .cm-toggle:after,
+        .cm-toggle:checked:before,
+        .cm-toggle:checked:after {
+            transition: ease .3s;
+            -webkit-transition: ease .3s;
+            -moz-transition: ease .3s;
+            -o-transition: ease .3s;
+        }
+
+
+        /* Custom Color */
+
+        .blue:checked:after {
+            background: #396afc;
+        }
+
+        h4{
+            text-align: center;
+        }
+        .form-check-label{
+            margin-left: 20px;
+        }
+
+         td, th {
+            border: 1px solid #CCCCCC;
+         }
+    </style>
+{% endblock %}
+
+{% block 'scripts' %}
+    $('#id_completed_by_here').prop('class', 'cm-toggle blue');
+    document.getElementById("id_status").checked = false;
+    document.getElementById("div_id_status").style.display = "none";
+{% endblock %}

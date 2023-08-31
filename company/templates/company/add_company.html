@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block 'dashboard' %}
+<div class="container-fluid">
+  <!-- left column -->
+  <div>
+    <!-- general form elements -->
+    <div class="card card-primary">
+      <div class="card-header">
+        <h3 class="card-title">Adicionar Empresa</h3>
+      </div>
+      <!-- /.card-header -->
+      <!-- form start -->
+      {% if form %}
+        <form role="form" action="{% url 'search_company' %}" method="POST">
+          {% csrf_token %}
+          <div class="card-body">
+            {{ form.cnpj|as_crispy_field }}
+            {% include 'partial/_messages.html' %}
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer">
+            <input type="submit" class="btn btn-primary" value="Buscar Empresa">
+          </div>
+        </form>
+      {% elif CompanyForm %}
+        <form role="form" action="{% url 'save_company' %}" method="POST">
+          {% csrf_token %}
+          <div class="card-body">
+            {% for field in CompanyForm %}
+              {{ field|as_crispy_field }}
+            {% endfor %}
+          </div>
+          <!-- /.card-body -->
+          <div class="card-footer">
+            <input type="submit" class="btn btn-primary" value="Adicionar Empresa">
+          </div>
+        </form>
+      {% endif %}
+    </div>
+    <!-- /.card -->
+  </div>
+</div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.js"></script>
+{% endblock %}
+
+{% block 'scripts' %}
+  {% if CompanyForm %}
+    $(document).ready(function() {
+      var fields = ['id_razao_social', 'id_nome_fantasia', 'id_cnpj', 'id_cep', 'id_cidade', 'id_bairro', 'id_rua', 'id_estado', 'id_complemento'];
+      {% for company_data in data_company %}
+        $('#'+fields[{{ forloop.counter }}-1]).attr('value', '{{ company_data.1 }}');
+        $('#'+fields[{{ forloop.counter }}-1]).attr('readonly', '');
+      {% endfor %}
+    });
+  {% endif %}
+{% endblock %}

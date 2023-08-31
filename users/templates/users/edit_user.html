@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+<!--{% url 'company_manager_vacancies' %}-->
+
+{% block 'submenu' %}
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="" class="nav-link">Adicionar Usuário</a>
+</li>
+{% endblock %}
+
+{% block 'dashboard' %}
+    <div class="container-fluid">
+      <!-- left column -->
+      <div>
+        <!-- general form elements -->
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">Editar Usuário</h3>
+          </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+            <form role="form" action="" method="POST">
+              {% csrf_token %}
+              <div class="card-body">
+                {{ form|crispy }}
+
+                {% include 'partial/_messages.html' %}
+              </div>
+              <!-- /.card-body -->
+              <div class="card-footer">
+                <input type="submit" class="btn btn-primary" value="Editar">
+              </div>
+            </form>
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.js"></script>
+    <style>
+        .cm-toggle {
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .cm-toggle:after {
+            content: '';
+            width: 30px;
+            height: 14px;
+            display: inline-block;
+            background: rgba(196, 195, 195, 0.55);
+            border-radius: 18px;
+            clear: both;
+        }
+
+        .cm-toggle:before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            display: block;
+            position: absolute;
+            left: 0;
+            top: -1.5px;
+            border-radius: 50%;
+            background: rgb(255, 255, 255);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+
+        .cm-toggle:checked:before {
+            left: 16px;
+            box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .cm-toggle:checked:after {
+            background: #16a085;
+        }
+
+        .cm-toggle,
+        .cm-toggle:before,
+        .cm-toggle:after,
+        .cm-toggle:checked:before,
+        .cm-toggle:checked:after {
+            transition: ease .3s;
+            -webkit-transition: ease .3s;
+            -moz-transition: ease .3s;
+            -o-transition: ease .3s;
+        }
+
+
+        /* Custom Color */
+
+        .blue:checked:after {
+            background: #396afc;
+        }
+
+        h4{
+            text-align: center;
+        }
+        .form-check-label{
+            margin-left: 20px;
+        }
+
+         td, th {
+            border: 1px solid #CCCCCC;
+         }
+    </style>
+{% endblock %}
+
+{% block 'scripts' %}
+    {% if basicInfo %}
+        $('#collapse1').attr('class', 'panel-collapse collapse in');
+    {% elif requeriments %}
+        $('#collapse2').attr('class', 'panel-collapse collapse in');
+        $('#collapse3').attr('class', 'panel-collapse collapse in');
+
+        var fields_pcd = ["id_pcd_auditiva", "id_pcd_mental", "id_pcd_nanismo", "id_pcd_visao", "id_pcd_membros_superiores", "id_pcd_membros_inferiores"];
+
+        for(field=0;  field < fields_pcd.length; field++){
+            $('#'+fields_pcd[field]).attr('class', 'cm-toggle blue');
+        }
+    {% elif benefits %}
+        $('#collapse4').attr('class', 'panel-collapse collapse in');
+        document.getElementById("div_id_percentual").style.display = "none";
+
+        checkBox = document.getElementById('id_comissao').addEventListener('click', event => {
+            if(event.target.checked) {
+                document.getElementById("div_id_percentual").style.display = "block";
+                $("#id_percentual").prop('required',true);
+            }else{
+                document.getElementById("div_id_percentual").style.display = "none";
+                $("#id_percentual").prop('required',false);
+            }
+        });
+
+        var fields_pcd = ["comissao", "transporte", "refeicao", "transporte_empresa", "refeitorio_empresa", "ass_medica", "ass_odonto", "seguro_vida", "add_noturno", "cesta_basica", "add_periculosidade", "uniforme", "auxilio_creche"];
+
+        for(field=0;  field < fields_pcd.length; field++){
+            $('#id_'+fields_pcd[field]).prop('class', 'cm-toggle blue');
+        }
+    {% elif details %}
+        $('#collapse5').attr('class', 'panel-collapse collapse in');
+    {% endif %}
+
+    $('#id_quantidade_vagas').attr('min', '1');
+    $('#id_quantidade_vagas').attr('max', '100');
+
+    $('#id_jornada_trabalho').attr('min', '4');
+    $('#id_jornada_trabalho').attr('max', '24');
+
+    $('#id_tempo_experiencia').attr('min', '1');
+    $('#id_tempo_experiencia').attr('max', '12');
+
+    $('#id_semestre').attr('min', '1');
+    $('#id_semestre').attr('max', '12');
+
+    $('#id_salario_fixo').attr('min', '400');
+    $('#id_salario_fixo').attr('max', '10000');
+
+    $('#id_percentual').attr('min', '1');
+    $('#id_percentual').attr('max', '100');
+
+    $('#id_experiencia_comprovada').on('change', function() {
+        if(this.value != ""){
+            document.getElementById("div_id_tempo_experiencia").style.display = "block";
+            document.getElementById("div_id_tipo_tempo").style.display = "block";
+            $("#id_tempo_experiencia").prop('required',true);
+            $("#id_tipo_tempo").prop('required',true);
+        }else{
+            document.getElementById("div_id_tempo_experiencia").style.display = "none";
+            document.getElementById("div_id_tipo_tempo").style.display = "none";
+            $("#id_tempo_experiencia").prop('required',false);
+            $("#id_tipo_tempo").prop('required',false);
+        }
+    });
+
+    $('#id_escolaridade').on('change', function() {
+        if(this.value == 3 || this.value == 5){
+            document.getElementById("div_id_curso").style.display = "block";
+            document.getElementById("div_id_semestre").style.display = "block";
+            $("#id_curso").prop('required',true);
+            $("#id_semestre").prop('required',true);
+        }else if(this.value == 4 || this.value == 6){
+            document.getElementById("div_id_curso").style.display = "block";
+            document.getElementById("div_id_semestre").style.display = "none";
+            $("#id_curso").prop('required',true);
+            $("#id_semestre").prop('required',false);
+        }else{
+            document.getElementById("div_id_curso").style.display = "none";
+            document.getElementById("div_id_semestre").style.display = "none";
+            $("#id_curso").prop('required',false);
+            $("#id_semestre").prop('required',false);
+        }
+    });
+
+    $('#id_language').on('change', function() {
+        if(this.value != ""){
+            document.getElementById("div_id_nivel").style.display = "block";
+            $("#id_nivel").prop('required',true);
+        }else{
+            document.getElementById("div_id_nivel").style.display = "none";
+            $("#id_nivel").prop('required',false);
+        }
+    });
+
+    $( window ).on( "load", function() {
+        document.getElementById("div_id_tempo_experiencia").style.display = "none";
+        document.getElementById("div_id_tipo_tempo").style.display = "none";
+        document.getElementById("div_id_curso").style.display = "none";
+        document.getElementById("div_id_semestre").style.display = "none";
+        document.getElementById("div_id_nivel").style.display = "none";
+    });
+
+    $("#id_data_entrevista").prop("type", "datetime-local");
+
+    checkBoxPcd = document.getElementById('checkBoxPcd').addEventListener('click', event => {
+        if(event.target.checked) {
+            document.getElementById("form_pcd").style.display = "block";
+        }else{
+            document.getElementById("form_pcd").style.display = "none";
+        }
+    });
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block 'submenu' %}
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'details_company' id_company %}" class="nav-link">Detalhes da Empresa</a>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'company_manager_vacancies' id_company %}" class="nav-link">Vagas</a>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'manager_contacts' id_company %}" class="nav-link">Contatos</a>
+</li>
+{% endblock %}
+
+{% block 'dashboard' %}
+<div class="small-box bg-info">
+    <div class="inner">
+        <br><br><br>
+    </div>
+    <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M18 15h-2v2h2m0-6h-2v2h2m2 6h-8v-2h2v-2h-2v-2h2v-2h-2V9h8M10 7H8V5h2m0 6H8V9h2m0 6H8v-2h2m0 6H8v-2h2M6 7H4V5h2m0 6H4V9h2m0 6H4v-2h2m0 6H4v-2h2m6-10V3H2v18h20V7H12Z"/></svg>
+    </div>
+    <a href="{% url 'add_contact' id_company %}" class="small-box-footer">Adicionar contato&emsp;<i class="fas fa fa-plus"></i></a>
+</div>
+<div class="small-box">
+    <div class="inner">
+        <h3>Contatos</h3>
+    </div>
+    <table>
+        <tr>
+            <th>Telefone</th>
+            <td>
+                Whatsapp?
+            </td>
+        </tr>
+        {% for contact in contacts %}
+            <tr>
+                <th>
+                    {% if contact.whatsapp == True %}
+                        <a id="phone_{{ forloop.counter }}">{{ contact.phone }}</a>
+                    {% else %}
+                        {{ contact.phone }}
+                    {% endif %}
+                </th>
+                <td>
+                    {% if contact.whatsapp == True %}
+                        <input type="checkbox" class="cm-toggle blue" onclick="return false;" checked/>
+                    {% else %}
+                        <input type="checkbox" class="cm-toggle blue" onclick="return false;"/>
+                    {% endif %}
+                </td>
+                <td>
+                    <button class="btn btn-primary" onclick="location.href='{% url 'edit_contact' id_company contact.id %}'" type="button">Editar</button>
+                </td>
+                <td>
+                    <button class="btn btn-danger" onclick="location.href='{% url 'delete_contact' id_company contact.id %}'" type="button">Apagar</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+<style>
+    .cm-toggle {
+        -webkit-appearance: none;
+        -webkit-tap-highlight-color: transparent;
+        position: relative;
+        border: 0;
+        outline: 0;
+        cursor: pointer;
+        margin: 10px;
+    }
+
+    .cm-toggle:after {
+        content: '';
+        width: 30px;
+        height: 14px;
+        display: inline-block;
+        background: rgba(196, 195, 195, 0.55);
+        border-radius: 18px;
+        clear: both;
+    }
+
+    .cm-toggle:before {
+        content: '';
+        width: 16px;
+        height: 16px;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: -1.5px;
+        border-radius: 50%;
+        background: rgb(255, 255, 255);
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    .cm-toggle:checked:before {
+        left: 16px;
+        box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    .cm-toggle:checked:after {
+        background: #16a085;
+    }
+
+    .cm-toggle,
+    .cm-toggle:before,
+    .cm-toggle:after,
+    .cm-toggle:checked:before,
+    .cm-toggle:checked:after {
+        transition: ease .3s;
+        -webkit-transition: ease .3s;
+        -moz-transition: ease .3s;
+        -o-transition: ease .3s;
+    }
+
+    .blue:checked:after {
+        background: #396afc;
+    }
+</style>
+{% endblock %}
+{% block 'scripts' %}
+    const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    phoneFormated = "";
+
+    {% for contact in contacts %}
+        phone = "{{ contact.phone }}";
+        console.log(phone.length);
+
+        for(i=0; i < phone.length; i++) {
+            if(phone[i] in numbers){
+                phoneFormated = phoneFormated.concat(phone[i]);
+            }
+        }
+        $('#phone_{{ forloop.counter }}').attr('href', 'https://wa.me/55'+phoneFormated);
+        phoneFormated = "";
+    {% endfor %}
+{% endblock %}

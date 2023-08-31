@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block 'submenu' %}
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'details_company' company.id %}" class="nav-link">Detalhes da Empresa</a>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'company_manager_vacancies' company.id %}" class="nav-link">Vagas</a>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'manager_contacts' company.id %}" class="nav-link">Contatos</a>
+</li>
+{% endblock %}
+
+{% block 'dashboard' %}
+    <div class="info-box mb-3 bg-info">
+        <span class="info-box-icon"><i class="fas fa-tag"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Vagas Publicadas</span>
+            <span class="info-box-number">{{ len_vacancies }}</span>
+        </div>
+    </div>
+    <div class="info-box mb-3 bg-success">
+        <span class="info-box-icon"><i class="far fa-heart"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Vagas Preenchidas</span>
+            <span class="info-box-number">{{ completed_by_here }}</span>
+        </div>
+    </div>
+    <div class="info-box mb-3 bg-warning">
+        <div class="info-box-content">
+            <table id="data_company">
+                <tr>
+                    <th>Razao social</th>
+                    <td>{{ company.razao_social }}</td>
+                </tr>
+                <tr>
+                    <th>Nome fantasia</th>
+                    <td>{{ company.nome_fantasia }}</td>
+                </tr>
+                <tr>
+                    <th>CNPJ</th>
+                    <td>{{ company.cnpj }}</td>
+                </tr>
+                <tr>
+                    <th>E-mail</th>
+                    <td>{{ company.email }}</td>
+                </tr>
+                <tr>
+                    <th>CEP</th>
+                    <td>{{ company.cep }}</td>
+                </tr>
+                <tr>
+                    <th>Cidade</th>
+                    <td>{{ company.cidade }}</td>
+                </tr>
+                <tr>
+                    <th>Bairro</th>
+                    <td>{{ company.bairro }}</td>
+                </tr>
+                <tr>
+                    <th>Rua</th>
+                    <td>{{ company.rua }}</td>
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    <td>{{ company.estado }}</td>
+                </tr>
+                <tr>
+                    <th>Complemento</th>
+                    <td>{{ company.complemento }}</td>
+                </tr>
+                <tr>
+                    <th>Ponto de referência</th>
+                    <td>{{ company.ponto_referencia }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <style>
+        th {
+            border: 1px solid #FFC107;
+            background-color: #fff;
+        }
+        td{
+            border: 1px solid #FFC107;
+            background-color: #fff;
+        }
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        table, td, th {
+            border-radius: 10px;
+            -moz-border-radius: 5p10;
+            padding: 10px;
+        }
+
+    </style>
+{% endblock %}

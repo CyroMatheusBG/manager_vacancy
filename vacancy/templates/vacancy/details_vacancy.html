@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load static %}
+
+{% block 'submenu' %}
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'details_company' id_company %}" class="nav-link">Detalhes da Empresa</a>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'company_manager_vacancies' id_company %}" class="nav-link">Vagas</a>
+</li>
+<li class="nav-item d-none d-sm-inline-block">
+    <a href="{% url 'manager_contacts' id_company %}" class="nav-link">Contatos</a>
+</li>
+{% endblock %}
+
+{% block 'dashboard' %}
+    <div class="small-box">
+        <div class="panel panel-default">
+            <div class="panel-heading bg-info">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">INFORMAÇÕES BASICAS</a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% if BasicInfo %}
+                        {% for field_verbose_data in BasicInfo %}
+                            <label for="{{ field_verbose_data.0 }}" class="">{{ field_verbose_data.1 }}</label>
+                            <input type="text" name="{{ field_verbose_data.0 }}" maxlength="255" class="textinput textInput form-control" required="" id="{{ field_verbose_data.0 }}" readonly value="{{ field_verbose_data.2 }}">
+                        {% endfor %}
+                        {% if status != False %}
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" onclick="location.href='{% url 'edit_basic_info' id_vacancy %}'" type="button">Editar</button>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading bg-info">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">REQUISITOS</a>
+                </h4>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% if Requirements %}
+                        {% for field_verbose_data in Requirements %}
+                            <label for="{{ field_verbose_data.0 }}" class="">{{ field_verbose_data.1 }}</label>
+                            <input type="text" name="{{ field_verbose_data.0 }}" maxlength="255" class="textinput textInput form-control" required="" id="{{ field_verbose_data.0 }}" readonly value="{{ field_verbose_data.2 }}">
+                        {% endfor %}
+                        {% if status != False %}
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" onclick="location.href='{% url 'edit_requirements' id_vacancy %}'" type="button">Editar</button>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+        <div class="panel-heading bg-info">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">PCD</a>
+            </h4>
+        </div>
+        <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body">
+                {% if PCD %}
+                    <table>
+                        {% for field_verbose_data in PCD %}
+                            <tr>
+                                <th for="{{ field_verbose_data.0 }}" class="">{{ field_verbose_data.1 }}</th>
+                                <td>
+                                    {% if field_verbose_data.2 == "True" %}
+                                        <input type="checkbox" class="cm-toggle blue" onclick="return false;" checked/>
+                                    {% else %}
+                                        <input type="checkbox" class="cm-toggle blue" onclick="return false;"/>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    {% if status != False %}
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" onclick="location.href='{% url 'edit_pcd' id_vacancy %}'" type="button">Editar</button>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading bg-info">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">BENEFÍCIOS</a>
+                </h4>
+            </div>
+            <div id="collapse4" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% if Benefits %}
+                        <table>
+                            {% for field_verbose_data in Benefits %}
+                                <tr>
+                                    <th for="{{ field_verbose_data.0 }}" class="">{{ field_verbose_data.1 }}</th>
+                                    <td>
+                                        {% if field_verbose_data.2 == True %}
+                                            <input type="checkbox" class="cm-toggle blue" onclick="return false;" checked/>
+                                        {% elif field_verbose_data.2 == False %}
+                                            <input type="checkbox" class="cm-toggle blue" onclick="return false;"/>
+                                        {% else %}
+                                            <input type="text" name="{{ field_verbose_data.0 }}" maxlength="255" class="textinput textInput form-control" required="" id="{{ field_verbose_data.0 }}" readonly value="{{ field_verbose_data.2 }}">
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                        {% if status != False %}
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" onclick="location.href='{% url 'edit_benefits' id_vacancy %}'" type="button">Editar</button>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading bg-info">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">DETALHES</a>
+                </h4>
+            </div>
+            <div id="collapse5" class="panel-collapse collapse">
+                <div class="panel-body">
+                    {% if Details %}
+                        {% for field_verbose_data in Details %}
+                                <label for="{{ field_verbose_data.0 }}" class="">{{ field_verbose_data.1 }}</label>
+                                <input type="text" name="{{ field_verbose_data.0 }}" maxlength="255" class="textinput textInput form-control" required="" id="{{ field_verbose_data.0 }}" readonly value="{{ field_verbose_data.2 }}">
+                        {% endfor %}
+                        {% if status != False %}
+                            <div class="modal-footer">
+                                <button class="btn btn-primary" onclick="location.href='{% url 'edit_details' id_vacancy %}'" type="button">Editar</button>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if status != False %}
+            <div class="modal-footer">
+                <button class="btn btn-danger" onclick="location.href='{% url 'vacancy_completed' id_vacancy %}'" type="button">Finalizar vaga</button>
+            </div>
+        {% endif %}
+    </div>
+    <style>
+        .cm-toggle {
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .cm-toggle:after {
+            content: '';
+            width: 30px;
+            height: 14px;
+            display: inline-block;
+            background: rgba(196, 195, 195, 0.55);
+            border-radius: 18px;
+            clear: both;
+        }
+
+        .cm-toggle:before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            display: block;
+            position: absolute;
+            left: 0;
+            top: -1.5px;
+            border-radius: 50%;
+            background: rgb(255, 255, 255);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+
+        .cm-toggle:checked:before {
+            left: 16px;
+            box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .cm-toggle:checked:after {
+            background: #16a085;
+        }
+
+        .cm-toggle,
+        .cm-toggle:before,
+        .cm-toggle:after,
+        .cm-toggle:checked:before,
+        .cm-toggle:checked:after {
+            transition: ease .3s;
+            -webkit-transition: ease .3s;
+            -moz-transition: ease .3s;
+            -o-transition: ease .3s;
+        }
+
+        .blue:checked:after {
+            background: #396afc;
+        }
+
+        h4{
+            text-align: center;
+        }
+        .form-check-label{
+            margin-left: 20px;
+        }
+         td, th {
+            border: 1px solid #CCCCCC;
+         }
+    </style>
+{% endblock %}
+
+{% block 'scripts' %}
+    {% if FormBasicInfo %}
+        var fields = [ 'ocupacao', 'tipo_vaga', 'descricao_atividade', 'observacoes', 'local_trabalho', 'local_entrevista', 'quantidade_vagas', 'jornada_trabalho']
+        {% for dataField in BasicInfo %}
+            $('#id_'+fields[{{ forloop.counter }}-1]).attr('value', '{{ dataField.2 }}');
+        {% endfor %}
+    {% endif %}
+
+    {% if basicInfo %}
+        $('#collapse1').attr('class', 'panel-collapse collapse in');
+    {% elif requeriments %}
+        $('#collapse2').attr('class', 'panel-collapse collapse in');
+        $('#collapse3').attr('class', 'panel-collapse collapse in');
+
+        var fields_pcd = ["id_pcd_auditiva", "id_pcd_mental", "id_pcd_nanismo", "id_pcd_visao", "id_pcd_membros_superiores", "id_pcd_membros_inferiores"];
+
+        for(field=0;  field < fields_pcd.length; field++){
+            $('#'+fields_pcd[field]).attr('class', 'cm-toggle blue');
+        }
+    {% elif benefits %}
+        $('#collapse4').attr('class', 'panel-collapse collapse in');
+        document.getElementById("div_id_percentual").style.display = "none";
+
+        checkBox = document.getElementById('id_comissao').addEventListener('click', event => {
+            if(event.target.checked) {
+                document.getElementById("div_id_percentual").style.display = "block";
+                $("#id_percentual").prop('required',true);
+            }else{
+                document.getElementById("div_id_percentual").style.display = "none";
+                $("#id_percentual").prop('required',false);
+            }
+        });
+
+        var fields_pcd = ["comissao", "transporte", "refeicao", "transporte_empresa", "refeitorio_empresa", "ass_medica", "ass_odonto", "seguro_vida", "add_noturno", "cesta_basica", "add_periculosidade", "uniforme", "auxilio_creche"];
+
+        for(field=0;  field < fields_pcd.length; field++){
+            $('#id_'+fields_pcd[field]).prop('class', 'cm-toggle blue');
+        }
+    {% elif details %}
+        $('#collapse5').attr('class', 'panel-collapse collapse in');
+    {% endif %}
+
+    $('#id_quantidade_vagas').attr('min', '1');
+    $('#id_quantidade_vagas').attr('max', '100');
+
+    $('#id_jornada_trabalho').attr('min', '4');
+    $('#id_jornada_trabalho').attr('max', '24');
+
+    $('#id_tempo_experiencia').attr('min', '1');
+    $('#id_tempo_experiencia').attr('max', '12');
+
+    $('#id_semestre').attr('min', '1');
+    $('#id_semestre').attr('max', '12');
+
+    $('#id_salario_fixo').attr('min', '400');
+    $('#id_salario_fixo').attr('max', '10000');
+
+    $('#id_percentual').attr('min', '1');
+    $('#id_percentual').attr('max', '100');
+
+    $('#id_experiencia_comprovada').on('change', function() {
+        if(this.value != ""){
+            document.getElementById("div_id_tempo_experiencia").style.display = "block";
+            document.getElementById("div_id_tipo_tempo").style.display = "block";
+            $("#id_tempo_experiencia").prop('required',true);
+            $("#id_tipo_tempo").prop('required',true);
+        }else{
+            document.getElementById("div_id_tempo_experiencia").style.display = "none";
+            document.getElementById("div_id_tipo_tempo").style.display = "none";
+            $("#id_tempo_experiencia").prop('required',false);
+            $("#id_tipo_tempo").prop('required',false);
+        }
+    });
+
+    $('#id_escolaridade').on('change', function() {
+        if(this.value == 3 || this.value == 5){
+            document.getElementById("div_id_curso").style.display = "block";
+            document.getElementById("div_id_semestre").style.display = "block";
+            $("#id_curso").prop('required',true);
+            $("#id_semestre").prop('required',true);
+        }else if(this.value == 4 || this.value == 6){
+            document.getElementById("div_id_curso").style.display = "block";
+            document.getElementById("div_id_semestre").style.display = "none";
+            $("#id_curso").prop('required',true);
+            $("#id_semestre").prop('required',false);
+        }else{
+            document.getElementById("div_id_curso").style.display = "none";
+            document.getElementById("div_id_semestre").style.display = "none";
+            $("#id_curso").prop('required',false);
+            $("#id_semestre").prop('required',false);
+        }
+    });
+
+    $('#id_language').on('change', function() {
+        if(this.value != ""){
+            document.getElementById("div_id_nivel").style.display = "block";
+            $("#id_nivel").prop('required',true);
+        }else{
+            document.getElementById("div_id_nivel").style.display = "none";
+            $("#id_nivel").prop('required',false);
+        }
+    });
+
+    $( window ).on( "load", function() {
+        document.getElementById("div_id_tempo_experiencia").style.display = "none";
+        document.getElementById("div_id_tipo_tempo").style.display = "none";
+        document.getElementById("div_id_curso").style.display = "none";
+        document.getElementById("div_id_semestre").style.display = "none";
+        document.getElementById("div_id_nivel").style.display = "none";
+    });
+
+    $("#id_data_entrevista").prop("type", "datetime-local");
+
+    checkBoxPcd = document.getElementById('checkBoxPcd').addEventListener('click', event => {
+        if(event.target.checked) {
+            document.getElementById("form_pcd").style.display = "block";
+        }else{
+            document.getElementById("form_pcd").style.display = "none";
+        }
+    });
+{% endblock %}
